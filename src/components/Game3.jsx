@@ -4,12 +4,16 @@ import data from '../cordinates.json';
 import data1 from '../newcor.json';
 // import { Graphics } from '@pixi/react';
 import confetti from 'canvas-confetti';
+import letters from '../connnecting_letters.json'
 
 
 export default function Game3() {
     const appRef = useRef(null);
     const [stack, setStack] = useState([]);
-    const words = ['at', 'it', 'to', 'me', 'go'];
+    const [counter , setCounter] = useState(0);
+    const sId = Math.floor(Math.random() * 3);
+    const iId = Math.floor(Math.random() * 3);
+    const words = letters.session2.item1;
     useEffect(() => {
         (async () => {
             const app = new PIXI.Application();
@@ -128,10 +132,9 @@ export default function Game3() {
 
             const handleClick = (letter, index,Text,Graphics) => {
                 console.log("Clicked " + letter + " at index " + index);
-                if(Text.text === ""){
+                if(Graphics.tint === "#00FF00"){
                     return true;
                 }
-                
                 // Check if the stack is empty or the index of the new letter is equal to the index of the top element
                 if (stack.length === 0 || ((index === stack[stack.length - 1].index)  && (letter !== stack[0].letter))) {
                     // Push the new letter and its index to the stack
@@ -146,12 +149,13 @@ export default function Game3() {
                         //     origin: { y: 0.9 },
 
                         // });
-                        stack[1].Text.text = "";
+                        
                         stack.pop();
-                        stack[0].Text.text = "";
+                        
 
                         stack.pop();
                         console.log("correct");
+                        setCounter(counter+1);
                         wrong_right.style.fill = "#00FF00";
                         wrong_right.text = "correct!!";
                         setTimeout(() => {
@@ -170,14 +174,21 @@ export default function Game3() {
                     console.log("Incorrect order!");
                     // Clear the stack if the order is incorrect
                         console.log(stack);
+                        Graphics.tint = "#FF0000";
+                        stack[0].Graphics.tint = "#FF0000";
+                        setTimeout(() => {
+                            Graphics.tint = undefined
+                            stack[0].Graphics.tint = undefined;
+                            stack.pop();
+                        }, 2000);
+                        
                         wrong_right.style.fill = "#D2042D";
                         wrong_right.text = "Incorrect order!";
                         setTimeout(() => {
                             wrong_right.text = "";
                         }, 2000);
                     // setStack([]);
-                    stack[0].Graphics.tint = undefined;
-                    stack.pop();
+                    
                     return false;
                 }
             };
@@ -194,7 +205,7 @@ export default function Game3() {
 
     return (
         <div>
-            <div id="pixi-container">
+            <div id="pixi-container" style={{display:"flex" , justifyContent:"center" , alignItems:"center"}}>
                 <canvas id='board'></canvas>
             </div>
         </div>
