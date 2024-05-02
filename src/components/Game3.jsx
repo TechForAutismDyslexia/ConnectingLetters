@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Application, Assets, Sprite, Text, TextStyle, Graphics } from "pixi.js";
+import {
+  Application,
+  Assets,
+  Sprite,
+  Text,
+  TextStyle,
+  Graphics,
+} from "pixi.js";
 import data from "../cordinates.json";
 import data1 from "../newcor.json";
 // import { Graphics } from '@pixi/react';
@@ -21,29 +28,33 @@ export default function Game3() {
       if (window.innerHeight < window.innerWidth) {
         screenSize = {
           width: window.innerHeight * (4 / 3),
-          height: window.innerHeight * 0.8
+          height: window.innerHeight * 0.8,
         };
       } else {
         screenSize = {
           width: window.innerWidth * 0.9,
-          height: window.innerWidth * (3 / 4)
+          height: window.innerWidth * (3 / 4) * 0.8,
         };
       }
       await app.init({
         // background: "#000",
         antialias: true,
         canvas: document.getElementById("board"),
-        ...screenSize
+        ...screenSize,
       });
 
       const texture = await Assets.load("threads.jpg");
 
+      let scalingFactor = 1;
+      if (window.innerHeight < window.innerWidth)
+        scalingFactor = (app.screen.height * 0.9) / texture.frame.height;
+      else scalingFactor = (app.screen.width * 0.8) / texture.frame.width;
+
       const sprite = new Sprite(texture);
-      const scalingFactor = (app.screen.height * 0.9) / texture.frame.height;
       sprite.scale = scalingFactor;
       const Padding = {
         x: (app.screen.width - sprite.width) / 2,
-        y: (app.screen.height - sprite.height) / 2
+        y: (app.screen.height - sprite.height) / 2,
       };
       sprite.x = Padding.x;
       sprite.y = Padding.y;
@@ -86,8 +97,8 @@ export default function Game3() {
             fontFamily: "Arial",
             fontSize: 24 * scalingFactor,
             fill: "#000",
-            align: "center"
-          })
+            align: "center",
+          }),
         });
 
         const rightText = new Text({
@@ -96,8 +107,8 @@ export default function Game3() {
             fontFamily: "Arial",
             fontSize: 24 * scalingFactor,
             fill: "#000",
-            align: "center"
-          })
+            align: "center",
+          }),
         });
 
         // const xLeft = data.left[index].x * 2 + (1280 - 1000) / 2 - 20;
@@ -119,7 +130,10 @@ export default function Game3() {
           .circle(xRight, yRight, 15 * scalingFactor)
           .fill("#FFF")
           .stroke({ color: "#000", width: 2 });
-
+        circleLeft.index = i;
+        circleRight.index = i;
+        circleLeft.display = 0;
+        circleRight.display = 1;
         leftText.x = xLeft;
         leftText.y = yLeft;
         // leftText._anchor = 0;
@@ -133,19 +147,15 @@ export default function Game3() {
         circleRight.interactive = true;
 
         circleLeft.on("pointerdown", () => {
-          let val = handleClick(leftLetter, i, leftText, circleLeft);
+          let val = handleclick(circleLeft);
           if (val) {
             circleLeft.tint = 0x33ff33;
-          } else if (stack.length === 0) {
-            circleLeft.tint = undefined;
           }
         });
         circleRight.on("pointerdown", () => {
-          let val = handleClick(rightLetter, i, rightText, circleRight);
+          let val = handleclick(circleRight);
           if (val) {
             circleRight.tint = 0x33ff33;
-          } else if (stack.length === 0) {
-            circleRight.tint = undefined;
           }
         });
 
@@ -155,59 +165,38 @@ export default function Game3() {
         app.stage.addChild(rightText);
       }
 
-      const handleClick = (letter, index, Text, Graphics) => {
-        console.log("Clicked " + letter + " at index " + index);
-        if (Text.text === "") {
-          return true;
-        }
+      
+      const handleclick = (Graphics) => {
+        stack.push(Graphics);
+        if (stack.length === 1) {
+          Graphics.tint = "#FFFF00";
+        } else if (stack.length === 2) {
+          if (stack[1].display === stack[0].display) {
+            Graphics.tint = "#FF0000";
+            stack[0].tint = "#FF0000";
 
-        // Check if the stack is empty or the index of the new letter is equal to the index of the top element
-        if (
-          stack.length === 0 ||
-          (index === stack[stack.length - 1].index && letter !== stack[0].letter)
-        ) {
-          // Push the new letter and its index to the stack
-          stack.push({ letter, index, Text, Graphics });
-          if (stack.length === 2) {
-            // confetti({
-            //     particleCount: 600,
-            //     spread: 90,
-            //     decay: 0.95,
-            //     scalar: 1.5,
-            //     ticks: 150,
-            //     origin: { y: 0.9 },
-            // });
-
-            console.log("correct");
-            setCounter(counter + 1);
-            // wrong_right.style.fill = "#00FF00";
-            // wrong_right.text = "correct!!";
-            // setTimeout(() => {
-            //   wrong_right.text = "";
-            // }, 2000);
-            // console.log(stack);
+            color(stack[0]);
+            color(stack[1]);
             stack.pop();
             stack.pop();
-
-            // stack[-1].text = "";
+          } else if (Graphics.index === stack[0].index) {
+            Graphics.tint = "#00FF00";
+            stack[0].tint = "#00FF00";
+            Graphics.interactive = false;
+            stack[0].interactive = false;
+            stack.pop();
+            stack.pop();
+            return true;
           }
-          return true;
         } else {
-          console.log("Incorrect order!");
-          // Clear the stack if the order is incorrect
-          console.log(stack);
-          // wrong_right.style.fill = "#D2042D";
-          // wrong_right.text = "Incorrect order!";
-          Graphics.tint = "#FF0000";
-          stack[0].Graphics.tint = "#FF0000";
-          // setTimeout(() => {
-          //   Graphics.tint = undefined;
-          //   stack[0].Graphics.tint = undefined;
-          //   //   wrong_right.text = "";
-          // }, 2000);
-          // stack.pop();
+          stack.pop();
           return false;
         }
+      };
+      const color = (Graphics) => {
+        setTimeout(() => {
+          Graphics.tint = undefined;
+        }, 2000);
       };
     })();
   }, []);
@@ -215,7 +204,12 @@ export default function Game3() {
   return (
     <div
       id="pixi-container"
-      style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "98vh" }}
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "98vh",
+      }}
     >
       <canvas id="board"></canvas>
     </div>
