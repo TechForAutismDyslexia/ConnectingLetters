@@ -8,17 +8,29 @@ import {
   Graphics,
 } from "pixi.js";
 import data from "../cordinates.json";
-import data1 from "../newcor.json";
+import * as PIXI from "pixi.js";
+// import data1 from "../newcor.json";
+import data1 from "../levelCoordinates.json";
+import wordsArray from "../connnecting_letters.json";
 // import { Graphics } from '@pixi/react';
 import confetti from "canvas-confetti";
+import Modal from "./Modal";
 
 export default function Game3() {
   const appRef = useRef(null);
   const [stack, setStack] = useState([]);
+  const [tries, setTries] = useState(0);
+  const [show, setShow] = useState(1);
   const [counter, setCounter] = useState(0);
   const sId = Math.floor(Math.random() * 3);
   const iId = Math.floor(Math.random() * 3);
-  const words = ["at", "it", "to", "me", "go"];
+  const words = wordsArray[`session1`][`item${show}`];
+
+  const handleNext = () => {
+    setTries(0);
+    setCounter(0);
+    setShow((show) => show + 1);
+  };
   useEffect(() => {
     (async () => {
       const app = new Application();
@@ -38,12 +50,16 @@ export default function Game3() {
       }
       await app.init({
         // background: "#000",
+        resolution: window.devicePixelRatio || 1, // Use device pixel ratio for better quality
+        autoDensity: true,
         antialias: true,
         canvas: document.getElementById("board"),
         ...screenSize,
       });
 
-      const texture = await Assets.load("threads.jpg");
+      app.renderer.resize(screenSize.width, screenSize.height);
+
+      const texture = await Assets.load(`/SetA/template${show}.jpg`);
 
       let scalingFactor = 1;
       if (window.innerHeight < window.innerWidth)
@@ -95,7 +111,7 @@ export default function Game3() {
           text: leftLetter,
           style: new TextStyle({
             fontFamily: "Arial",
-            fontSize: 24 * scalingFactor,
+            fontSize: 50 * scalingFactor,
             fill: "#000",
             align: "center",
           }),
@@ -105,29 +121,30 @@ export default function Game3() {
           text: rightLetter,
           style: new TextStyle({
             fontFamily: "Arial",
-            fontSize: 24 * scalingFactor,
+            fontSize: 50 * scalingFactor,
             fill: "#000",
             align: "center",
           }),
         });
 
-        // const xLeft = data.left[index].x * 2 + (1280 - 1000) / 2 - 20;
-        // const yLeft = data.left[index].y * 1.5 + (720 - 338 * 1.5) / 2 + 10;
-        // const xRight = data.right[index].x * 2 + (1280 - 1000) / 2 + 20;
-        // const yRight = data.right[index].y * 1.5 + (720 - 338 * 1.5) / 2 - 10;
-
-        const xLeft = (data1[i + 1].left.x - 10) * scalingFactor + Padding.x;
-        const yLeft = data1[i + 1].left.y * scalingFactor + Padding.y;
-        const xRight = (data1[i + 1].right.x + 10) * scalingFactor + Padding.x;
-        const yRight = data1[i + 1].right.y * scalingFactor + Padding.y;
+        const xLeft =
+          (data1[`template${show}`][i + 1].left.x - 10) * scalingFactor +
+          Padding.x;
+        const yLeft =
+          data1[`template${show}`][i + 1].left.y * scalingFactor + Padding.y;
+        const xRight =
+          (data1[`template${show}`][i + 1].right.x + 10) * scalingFactor +
+          Padding.x;
+        const yRight =
+          data1[`template${show}`][i + 1].right.y * scalingFactor + Padding.y;
 
         const circleLeft = new Graphics()
-          .circle(xLeft, yLeft, 15 * scalingFactor)
+          .circle(xLeft, yLeft, 40 * scalingFactor)
           .fill("#FFF")
           .stroke({ color: "#000", width: 2 });
 
         const circleRight = new Graphics()
-          .circle(xRight, yRight, 15 * scalingFactor)
+          .circle(xRight, yRight, 40 * scalingFactor)
           .fill("#FFF")
           .stroke({ color: "#000", width: 2 });
         circleLeft.index = i;
@@ -164,54 +181,93 @@ export default function Game3() {
         app.stage.addChild(leftText);
         app.stage.addChild(rightText);
       }
-
-      
       const handleclick = (Graphics) => {
         stack.push(Graphics);
         if (stack.length === 1) {
+          if (Graphics.display !== 0) {
+            Graphics.tint = "FF0000"
+            stack.pop()
+            resetColor(Graphics)
+            return false;
+          } 
           Graphics.tint = "#FFFF00";
-        } else if (stack.length === 2) {
-          if (stack[1].display === stack[0].display) {
-            Graphics.tint = "#FF0000";
-            stack[0].tint = "#FF0000";
+        }
 
-            color(stack[0]);
-            color(stack[1]);
-            stack.pop();
-            stack.pop();
-          } else if (Graphics.index === stack[0].index) {
-            Graphics.tint = "#00FF00";
-            stack[0].tint = "#00FF00";
-            Graphics.interactive = false;
-            stack[0].interactive = false;
-            stack.pop();
-            stack.pop();
+        else if(Graphics.display!==stack[stack.length-2].display+1 || stack[stack.length-2].index!==Graphics.index){
+            while(stack.length!==0){
+              const elem = stack.pop();
+              resetColor(elem);
+              elem.tint = "#FF0000";
+              elem.interactive = false;
+            }
+        } 
+        else if (stack.length === words[Graphics.index].length) {
+            confetti({
+              particleCount: 300,
+              spread: 90,
+              decay: 0.95,
+              scalar: 1.5,
+              ticks: 150,
+              origin: {
+                y: 0.9,
+              },
+            });
+            while(stack.length!==0){
+              const elem = stack.pop();
+              elem.interactive = false;
+              elem.tint = "#00FF00";
+            }
+            setCounter((counter) => counter + 1);
+            console.log(counter);
             return true;
-          }
+          
         } else {
           stack.pop();
           return false;
         }
       };
-      const color = (Graphics) => {
+      const resetColor = (Graphics) => {
         setTimeout(() => {
           Graphics.tint = undefined;
-        }, 2000);
+          Graphics.interactive = true;
+        }, 800);
       };
     })();
-  }, []);
+  }, [show]);
 
   return (
-    <div
-      id="pixi-container"
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "98vh",
-      }}
-    >
-      <canvas id="board"></canvas>
+    <div>
+      {/* <h1>Connect the letters to form a word</h1>
+       */}
+
+      <div
+        id="pixi-container"
+        className="d-flex flex-column"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "98vh",
+        }}
+      >
+        <div className="d-flex justify-content-around w-100">
+          <b className="fs-4" style={{color:"green"}}>Correct {counter}</b>
+          <b className="fs-4">Level {show}</b>
+        </div>
+        <div className="d-flex justify-content-around w-100">
+          <b className="fs-4" style={{color:"red"}}>Tries {tries}</b>
+          <b className="fs-5">SET-A</b>
+        </div>
+        <canvas id="board"></canvas>
+        <div>
+          {counter === 5 && show !== 3 ? (
+            <button className="btn btn-dark m-2" onClick={handleNext}>
+              {" "}
+              Next
+            </button>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }
