@@ -22,7 +22,7 @@ export default function Game3_1() {
   const [counter, setCounter] = useState(0);
   const sId = Math.floor(Math.random() * 3);
   const iId = Math.floor(Math.random() * 3);
-  const words = ["sad", "bad", "gog", "slo", "Asw"];
+  const words = ["saad", "bad", "gog", "slo", "Asw"];
 
   const handleNext = () => {
     setTries(0);
@@ -108,7 +108,7 @@ export default function Game3_1() {
             text: letter,
             style: new TextStyle({
               fontFamily: "Arial",
-              fontSize: 15 * scalingFactor,
+              fontSize: 20 * scalingFactor,
               fill: "#000",
               align: "center",
             }),
@@ -116,7 +116,7 @@ export default function Game3_1() {
           const px = (data1["template4"][i + 1][j].x) * scalingFactor + Padding.x;
           const py = (data1["template4"][i + 1][j].y) * scalingFactor + Padding.y;
           const circle = new Graphics()
-            .circle(px, py, 10 * scalingFactor)
+            .circle(px, py, 20 * scalingFactor)
             .fill("#FFF")
             .stroke({ color: "#000", width: 4 });
           circle.index = i;
@@ -127,9 +127,6 @@ export default function Game3_1() {
           circle.interactive = true;
           circle.on("pointerdown", () => {
             let val = handleclick(circle);
-            if (val) {
-              circle.tint = 0x33ff33;
-            }
           });
           app.stage.addChild(circle);
           app.stage.addChild(T);
@@ -145,39 +142,45 @@ export default function Game3_1() {
             return false;
           }
           Graphics.tint = "#FFFF00";
-        } else if (
-          Graphics.display !== stack[stack.length - 2].display + 1 ||
-          stack[stack.length - 2].index !== Graphics.index
+        } 
+        else if (
+          Graphics.display === stack[stack.length - 2].display + 1 &&
+          stack[stack.length - 2].index === Graphics.index
         ) {
-          while (stack.length !== 0) {
-            const elem = stack.pop();
-            resetColor(elem);
-            elem.tint = "#FF0000";
-            elem.interactive = false;
-          }
-        } else if (stack.length === words[Graphics.index].length) {
-          confetti({
-            particleCount: 300,
-            spread: 90,
-            decay: 0.95,
-            scalar: 1.5,
-            ticks: 150,
-            origin: {
-              y: 0.9,
-            },
-          });
-          while (stack.length !== 0) {
-            const elem = stack.pop();
-            elem.interactive = false;
-            elem.tint = "#00FF00";
-          }
-          setCounter((counter) => counter + 1);
-          console.log(counter);
-          return true;
-        } else {
-          stack.pop();
-          return false;
+            if (stack.length === words[Graphics.index].length) {
+                confetti({
+                  particleCount: 300,
+                  spread: 90,
+                  decay: 0.95,
+                  scalar: 1.5,
+                  ticks: 150,
+                  origin: {
+                    y: 0.9,
+                  },
+                });
+                while (stack.length !== 0) {
+                  const elem = stack.pop();
+                  elem.interactive = false;
+                  elem.tint = "#00FF00";
+                }
+                setCounter((counter) => counter + 1);
+                console.log(counter);
+                return true;
+              } 
+            Graphics.tint = "#FFFF00";
+            
+        } 
+        else{
+                while (stack.length !== 0) {
+                        const elem = stack.pop();
+                        resetColor(elem);
+                        elem.tint = "#FF0000";
+                        elem.interactive = false;
+            
+                }
+
         }
+        
       };
       const resetColor = (Graphics) => {
         setTimeout(() => {

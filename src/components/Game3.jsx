@@ -128,15 +128,15 @@ export default function Game3() {
         });
 
         const xLeft =
-          (data1[`template${show}`][i + 1].left.x - 10) * scalingFactor +
+          (data1[`template${show}`][i + 1][0].x - 10) * scalingFactor +
           Padding.x;
         const yLeft =
-          data1[`template${show}`][i + 1].left.y * scalingFactor + Padding.y;
+          data1[`template${show}`][i + 1][0].y * scalingFactor + Padding.y;
         const xRight =
-          (data1[`template${show}`][i + 1].right.x + 10) * scalingFactor +
+          (data1[`template${show}`][i + 1][1].x + 10) * scalingFactor +
           Padding.x;
         const yRight =
-          data1[`template${show}`][i + 1].right.y * scalingFactor + Padding.y;
+          data1[`template${show}`][i + 1][1].y * scalingFactor + Padding.y;
 
         const circleLeft = new Graphics()
           .circle(xLeft, yLeft, 40 * scalingFactor)
