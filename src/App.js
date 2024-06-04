@@ -25,14 +25,14 @@ function App() {
              <div className="card" style={{width :"18rem"}}>
              <div class="card-body">
                <h5 class="card-title">Level 0</h5>
-               <p class="card-text">Connect two letter across threads </p>
+               <p class="card-text">Connect 2 letters across threads </p>
                <Link to="/game3" type='button' className='btn btn-primary'>button</Link>
              </div>
            </div>
            <div className="card" style={{width :"18rem"}}>
              <div class="card-body">
-               <h5 class="card-title">Level 0</h5>
-               <p class="card-text">Connect two letter across threads </p>
+               <h5 class="card-title">Level 1</h5>
+               <p class="card-text">Connect 3 letters across threads </p>
                <Link to="/game3_1" type='button' className='btn btn-primary'>button</Link>
              </div>
            </div>
