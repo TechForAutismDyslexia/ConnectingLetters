@@ -7,23 +7,20 @@ import {
   TextStyle,
   Graphics,
 } from "pixi.js";
-import data from "../cordinates.json";
 import * as PIXI from "pixi.js";
 // import data1 from "../newcor.json";
 import data1 from "../levelCoordinates.json";
 import wordsArray from "../connnecting_letters.json";
 // import { Graphics } from '@pixi/react';
 import confetti from "canvas-confetti";
-import Modal from "./Modal";
+// import Modal from "./Modal";
 
 export default function Game3() {
   const appRef = useRef(null);
   const [stack, setStack] = useState([]);
   const [tries, setTries] = useState(0);
-  const [show, setShow] = useState(1);
+  const [show, setShow] = useState(3);
   const [counter, setCounter] = useState(0);
-  const sId = Math.floor(Math.random() * 3);
-  const iId = Math.floor(Math.random() * 3);
   const words = wordsArray[`session1`][`item${show}`];
 
   const handleNext = () => {
@@ -79,31 +76,7 @@ export default function Game3() {
       // sprite.anchor.set(0.5, 0.5);
       app.stage.addChild(sprite);
 
-      // const main_text = new Text({
-      //   text: "Connect the letters to form a word",
-      //   style: new TextStyle({
-      //     fill: "#FFF"
-      //   })
-      // });
-      // const wrong_right = new Text({
-      //   text: " ",
-
-      //   style: new TextStyle({
-      //     fontFamily: "Arial",
-      //     fontSize: 30,
-      //     fill: "#D2042D", // Text color: white
-      //     align: "center"
-      //   })
-      // });
-      // main_text.x = app.screen.width / 4;
-      // main_text.y = 50;
-      // // main_text.anchor = 0.5;
-      // app.stage.addChild(main_text);
-      // wrong_right.x = app.screen.width / 4;
-      // wrong_right.y = 20;
-      // app.stage.addChild(wrong_right);
-
-      for (let i = 0; i < data.left.length; i++) {
+      for (let i = 0; i < 5; i++) {
         const leftLetter = words[i][0];
         const rightLetter = words[i][1];
 
@@ -258,7 +231,10 @@ export default function Game3() {
           <b className="fs-4" style={{color:"red"}}>Tries {tries}</b>
           <b className="fs-5">SET-A</b>
         </div>
-        <canvas id="board"></canvas>
+        {counter===5 && show===3 ? (<canvas id="board"></canvas>):
+          <div className="Container">
+            {new Date}
+          </div>}
         <div>
           {counter === 5 && show !== 3 ? (
             <button className="btn btn-dark m-2" onClick={handleNext}>

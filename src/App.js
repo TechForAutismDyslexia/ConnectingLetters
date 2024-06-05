@@ -1,47 +1,42 @@
 
-// import Game from './components/Game_1';
-import Game from './components/Game';
-import Game3 from './components/Game3';
-import { BrowserRouter as Router , Routes , Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router , Routes , Route } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import './index.css';
-import Game3_1 from './components/Game3_1';
+import GameThreeOne from './components/GameThreeOne';
+ 
 
 function App() {
-  const navigate = useNavigate();
-  const Gamechanger = () => {
-    navigate('/game3');
-  };
+  const clicked = () => {
+    const msg = new SpeechSynthesisUtterance('');
+    window.speechSynthesis.speak(msg);
+  }
   return (
-    <div className="fgb">
-      
-      
+    <div>
         {/* <h1>Form Words using the letters!</h1> */}
+  
         <Routes>
-          <Route path="/game3" element={<Game3 />} />
-          <Route path='/game3_1' element={<Game3_1/>} />
+          
+          <Route path='/game3_1' element={<GameThreeOne/>} />
           <Route path="/" element={
-             <>
-             <div className="card" style={{width :"18rem"}}>
-             <div class="card-body">
-               <h5 class="card-title">Level 0</h5>
-               <p class="card-text">Connect 2 letters across threads </p>
-               <Link to="/game3" type='button' className='btn btn-primary'>button</Link>
-             </div>
-           </div>
-           <div className="card" style={{width :"18rem"}}>
-             <div class="card-body">
-               <h5 class="card-title">Level 1</h5>
-               <p class="card-text">Connect 3 letters across threads </p>
-               <Link to="/game3_1" type='button' className='btn btn-primary'>button</Link>
-             </div>
-           </div>
-           </>
+            <section className="container">
+            <div className="d-flex flex-column justify-content-center align-items-center">
+              <h1>Connecting Letters - Bridging</h1>
+              <div className="card  border border-4 " style={{maxWidth:"350px",minWidth:"280px"}}>
+                <div className="card-body d-flex flex-column flex-wrap justify-content-center">
+                  <h5 className="card-title">Level 1</h5>
+                  <img src="/Dimg.jpg" alt="Display" className="img-fluid rounded-3 border border-4 border-black"  />
+                  <p className="card-text" >Connect a letter on Left Side of the page to a letter on right side of the page by following the line.</p>
+                  <Link to="/game3_1" type="button" className="btn btn-primary d-block" onClick={clicked}>Start</Link>
+                </div>
+              </div>
+            </div>
+          </section>
            
 
           } />
 
         </Routes>
+
        
       
     </div>
