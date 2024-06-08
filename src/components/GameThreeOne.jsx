@@ -20,6 +20,7 @@ export default function GameThreeOne() {
   const [tries, setTries] = useState(0);
   const [show, setShow] = useState(1);
   const [counter, setCounter] = useState(0);
+  const [TotalTries,setTotalTires] = useState(0);
   const WordArray = [
     ["hop","bus","nut","pen","tap"],
     ["men","ant","mix","yet","cup"],
@@ -27,6 +28,7 @@ export default function GameThreeOne() {
   ]
   const words = WordArray[show-1];
   const handleNext = () => {
+    setTotalTires(TotalTries=>TotalTries+tries);
     setTries(0);
     setCounter(0);
     setShow((show) => show + 1);
@@ -41,7 +43,7 @@ export default function GameThreeOne() {
     if (!startTimeRef.current) {
       startTimeRef.current = new Date(); // Set start time only once
     }
-    const voice = (letter, rate=0.8 , pitch = 1) => {
+    const voice = (letter, rate=1 , pitch = 1) => {
       var msg = new SpeechSynthesisUtterance(letter);
       msg.voice = getVoice();
       msg.rate = rate;
@@ -50,6 +52,7 @@ export default function GameThreeOne() {
     };
 
     (async () => {
+     
       const app = new Application();
       appRef.current = app;
 
@@ -133,6 +136,7 @@ export default function GameThreeOne() {
             Graphics.tint = "FF0000";
             stack.pop();
             resetColor(Graphics);
+            setTries(tries=>tries+1);
             return false;
           }
           Graphics.tint = "#FFFF00";
@@ -232,7 +236,7 @@ export default function GameThreeOne() {
           <div className="Container d-flex flex-column justify-content-center">
             <h2 className="text-center">You have completed the game!</h2>
             <b className="fs-4">Time :{ (new Date()-startTimeRef.current)/1000}</b>
-            <b className="fs-4">No of tries : {tries}</b>
+            <b className="fs-4">No of tries : {TotalTries+tries} seconds</b>
             <Link to="/" className="btn btn-dark">Go back</Link>
           </div>}
         <div>
