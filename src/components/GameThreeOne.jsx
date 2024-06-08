@@ -235,8 +235,8 @@ export default function GameThreeOne() {
         </>):
           <div className="Container d-flex flex-column justify-content-center">
             <h2 className="text-center">You have completed the game!</h2>
-            <b className="fs-4">Time :{ (new Date()-startTimeRef.current)/1000}</b>
-            <b className="fs-4">No of tries : {TotalTries+tries} seconds</b>
+            <b className="fs-4">Time :{ (new Date()-startTimeRef.current)/1000} seconds</b>
+            <b className="fs-4">No of tries : {TotalTries+tries}</b>
             <Link to="/" className="btn btn-dark">Go back</Link>
           </div>}
         <div>
