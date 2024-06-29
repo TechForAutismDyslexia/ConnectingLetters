@@ -9,17 +9,17 @@
     },
     {
       "src": "favicon.ico",
-      "type": "image/png",
+      "type": "image/x-icon",
       "sizes": "192x192"
     },
     {
       "src": "favicon.ico",
-      "type": "image/png",
+      "type": "image/x-icon",
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/connectingletters",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#c1e4e3"
 }
