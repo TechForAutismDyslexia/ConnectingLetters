@@ -3,8 +3,8 @@ import { Modal, Button } from "react-bootstrap";
 export default function GameCompleted({ showModal, setShowModal, handleRestart }) {
   return (
     <Modal centered show={showModal}>
-      <Modal.Header closeButton>
-        <Modal.Title>Game Over</Modal.Title>
+      <Modal.Header>
+        <Modal.Title className="mx-auto">Game Over</Modal.Title>
       </Modal.Header>
       <Modal.Body>Congratulations! You've completed the game.</Modal.Body>
       <Modal.Footer>

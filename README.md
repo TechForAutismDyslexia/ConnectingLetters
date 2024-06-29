@@ -1,2 +1,5 @@
-This folder consists of games in development for special kids (dyslexic , autistic kids).
-Feel free to test the games!
+# TAD-Connecting-Letters-Game
+
+Connecting letters game for TAD (Tech for Autism & Dyslexia)
+
+> Website created using CRA
