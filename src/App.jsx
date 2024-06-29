@@ -21,7 +21,7 @@ export default function App() {
                     className="card  border border-4 mx-3"
                     style={{ maxWidth: "350px", minWidth: "280px" }}
                   >
-                    <Link reloadDocument
+                    <Link
                       className="card-body d-flex flex-column flex-wrap justify-content-center text-decoration-none"
                       to="./game?lvl=1"
                     >
@@ -42,7 +42,7 @@ export default function App() {
                     className="card  border border-4 mx-3"
                     style={{ maxWidth: "350px", minWidth: "280px" }}
                   >
-                    <Link reloadDocument
+                    <Link
                       className="card-body d-flex flex-column flex-wrap justify-content-center text-decoration-none"
                       to="./game?lvl=2"
                     >
