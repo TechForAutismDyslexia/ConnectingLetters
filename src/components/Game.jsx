@@ -9,6 +9,7 @@ import { Application, Assets, Sprite, Text, TextStyle, Graphics } from "pixi.js"
 
 import { Popover } from "bootstrap";
 import instructions from "../assets/instructions.wav";
+import axios from "axios";
 
 export default function Game() {
   const [searchParams] = useSearchParams();
@@ -19,12 +20,12 @@ export default function Game() {
   const [tries, setTries] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [lvl, setLvl] = useState(searchParams.get("lvl") || 1);
-  const [item, setItem] = useState(1);
+  const [item, setItem] = useState(9);
   const [gameOver, setGameOver] = useState(false);
   const data = useRef();
   const circles = useRef([]); // Store references to Circle objects
 
-  function handleNext() {
+  async function handleNext() {
     setTries(0);
     setCorrect(0);
     if (item < 9) setItem((item) => item + 1);
@@ -34,6 +35,13 @@ export default function Game() {
     } else {
       confetti();
       setGameOver(true);
+      var c = await axios.post("https://jwlgamesbackend.vercel.app/api/caretaker/sendgamedata", {
+        gameId:122,
+        tries: tries,
+        timer: (new Date() - startTimeRef.current)/1000,
+        status : true
+      });
+      console.log(c);
     }
   }
 
