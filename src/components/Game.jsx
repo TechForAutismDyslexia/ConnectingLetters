@@ -20,7 +20,7 @@ export default function Game() {
   const [tries, setTries] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [lvl, setLvl] = useState(searchParams.get("lvl") || 1);
-  const [item, setItem] = useState(9);
+  const [item, setItem] = useState(1);
   const [gameOver, setGameOver] = useState(false);
   const data = useRef();
   const circles = useRef([]); // Store references to Circle objects
