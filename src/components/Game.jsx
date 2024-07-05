@@ -1,45 +1,47 @@
 import React, { useRef, useState, useEffect } from "react";
 import confetti from "canvas-confetti";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import GameCompleted from "./Modals/GameCompleted";
 import NextLevel from "./Modals/NextLevel";
-
 import { Application, Assets, Sprite, Text, TextStyle, Graphics } from "pixi.js";
-
 import { Popover } from "bootstrap";
 import instructions from "../assets/instructions.wav";
 import axios from "axios";
 
 export default function Game() {
   const [searchParams] = useSearchParams();
-
   const appRef = useRef();
   const startTimeRef = useRef(null);
+  const triesRef = useRef(0);
+  const navigate = useNavigate();
   const stack = [];
   const [tries, setTries] = useState(0);
   const [correct, setCorrect] = useState(0);
-  const [lvl, setLvl] = useState(searchParams.get("lvl") || 1);
+  const [lvl, setLvl] = useState(parseInt(searchParams.get("lvl")) ?? 1);
   const [item, setItem] = useState(1);
   const [gameOver, setGameOver] = useState(false);
   const data = useRef();
-  const circles = useRef([]); // Store references to Circle objects
+  const circles = useRef([]);
 
   async function handleNext() {
+    triesRef.current += tries;
     setTries(0);
     setCorrect(0);
     if (item < 9) setItem((item) => item + 1);
     else if (lvl < 2) {
-      setLvl((lvl) => lvl + 1);
-      setItem(1);
+      navigate(`/game?lvl=${lvl + 1}`);
+      navigate(0);
+      // setLvl((lvl) => lvl + 1);
+      // setItem(1);
     } else {
       confetti();
       setGameOver(true);
       var c = await axios.post("https://jwlgamesbackend.vercel.app/api/caretaker/sendgamedata", {
-        gameId:122,
-        tries: tries,
-        timer: (new Date() - startTimeRef.current)/1000,
-        status : true
+        gameId: 122,
+        tries: triesRef.current + tries,
+        timer: (new Date() - startTimeRef.current) / 1000,
+        status: true
       });
       console.log(c);
     }
@@ -131,7 +133,7 @@ export default function Game() {
 
     if (!gameOver) {
       (async () => {
-        data.current = await await import(`../levels/level${lvl}/item${item}.json`);
+        data.current = await import(`../levels/level${lvl}/item${item}.json`);
 
         const app = new Application();
         appRef.current = app;
@@ -152,9 +154,7 @@ export default function Game() {
         app.renderer.resize(screenSize.width, screenSize.height);
 
         const texture = await Assets.load(
-          (
-            await import(`../levels/level${lvl}/images/item${item}.jpg`)
-          ).default
+          (await import(`../levels/level${lvl}/images/item${item}.jpg`)).default
         );
 
         let scalingFactor = 1;
@@ -176,7 +176,7 @@ export default function Game() {
           app.stage.removeChild(circle);
         });
         circles.current = [];
-
+        // await Assets.load('src/components/open_dyslexic/OpenDyslexic-Bold.otf');
         for (let i = 0; i < data.current.length; i++) {
           const word = Object.keys(data.current[i]);
           const pos = Object.values(data.current[i]);
@@ -187,7 +187,7 @@ export default function Game() {
             const LetterText = new Text({
               text: letter,
               style: new TextStyle({
-                fontFamily: "Arial",
+                fontFamily: 'Arial',
                 fontSize: 50 * scalingFactor,
                 fill: "#000",
                 align: "center"
@@ -211,8 +211,21 @@ export default function Game() {
         }
       })();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lvl, item, gameOver]); // re-fetch data when level or item changes
+
+  // Add a new useEffect to listen for URL changes and reload the page
+  useEffect(() => {
+    const handlePopState = () => {
+      window.location.reload();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   useEffect(() => {
     const popoverTriggerList = [].slice.call(
@@ -226,6 +239,7 @@ export default function Game() {
     };
   }, []);
 
+  if (lvl !== 1 && lvl !== 2) return <h1 style={{ position: "absolute", top: '50%', left: '50%' }}>Not Found</h1>;
   return (
     <>
       <GameCompleted

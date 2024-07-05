@@ -10,3 +10,11 @@ canvas {
 h1 {
   font-family: "Poppins", sans-serif;
 }
+* {
+  font-family: 'OpenDyslexicBold'; 
+  src: url('./components/open_dyslexic/OpenDyslexic-BoldItalic.otf');
+}
+/* @font-face {
+  font-family: 'OpenDyslexicBold'; 
+  src: url('./components/open_dyslexic/OpenDyslexic-Bold.otf');
+} */
