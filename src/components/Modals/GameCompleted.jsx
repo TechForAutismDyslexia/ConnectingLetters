@@ -8,9 +8,6 @@ export default function GameCompleted({ showModal, setShowModal, handleRestart }
       </Modal.Header>
       <Modal.Body>Congratulations! You've completed the game.</Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowModal(false)}>
-          Close
-        </Button>
         <Button variant="primary" onClick={handleRestart}>
           Restart Game
         </Button>

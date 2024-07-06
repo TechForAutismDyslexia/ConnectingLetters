@@ -51,6 +51,8 @@ export default function Game() {
     setLvl(1);
     setItem(1);
     setGameOver(false);
+    setTries(0);
+    navigate(`/`);
   }
 
   const instruction = new Audio(instructions);
