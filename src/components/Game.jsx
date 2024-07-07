@@ -37,14 +37,15 @@ export default function Game() {
     if (item < 9) setItem((item) => item + 1);
     else if (lvl < 2) {
       navigate(`/game?lvl=${lvl + 1}`);
-      navigate(0);
+      // navigate(0);
+      setLvl((lvl) => lvl + 1);
+      setItem(1);
     } else {
       confetti();
       setGameOver(true);
       const gameId = localStorage.getItem('gameId');
       const childId = localStorage.getItem('childId');
-      var c = await axios.post(`https://jwlgamesbackend.vercel.app/api/caretaker/${gameId}/${childId}`, {
-        gameId: 122,
+      var c = await axios.put(`https://jwlgamesbackend.vercel.app/api/caretaker/${gameId}/${childId}`, {
         tries: triesRef.current + tries,
         timer: totalTimeRef.current, // Report total accumulated time
         status: true
