@@ -14,6 +14,7 @@ export default function Game() {
   const appRef = useRef();
   const startTimeRef = useRef(null);
   const triesRef = useRef(0);
+  const totalTimeRef = useRef(0);
   const navigate = useNavigate();
   const stack = [];
   const [tries, setTries] = useState(0);
@@ -25,33 +26,46 @@ export default function Game() {
   const circles = useRef([]);
 
   async function handleNext() {
+    const elapsedTime = (new Date() - startTimeRef.current) / 1000; // Calculate elapsed time in seconds
+    totalTimeRef.current += elapsedTime; // Accumulate time
+
+    localStorage.setItem("timer", totalTimeRef.current);
     triesRef.current += tries;
     setTries(0);
     setCorrect(0);
+
     if (item < 9) setItem((item) => item + 1);
     else if (lvl < 2) {
       navigate(`/game?lvl=${lvl + 1}`);
       navigate(0);
-      // setLvl((lvl) => lvl + 1);
-      // setItem(1);
     } else {
       confetti();
       setGameOver(true);
-      var c = await axios.post("https://jwlgamesbackend.vercel.app/api/caretaker/sendgamedata", {
+      const gameId = localStorage.getItem('gameId');
+      const childId = localStorage.getItem('childId');
+      var c = await axios.post(`https://jwlgamesbackend.vercel.app/api/caretaker/${gameId}/${childId}`, {
         gameId: 122,
         tries: triesRef.current + tries,
-        timer: (new Date() - startTimeRef.current) / 1000,
+        timer: totalTimeRef.current, // Report total accumulated time
         status: true
+      },{
+        headers: {
+          "Authorization" : `${localStorage.getItem('logintoken')}`,
+        },
       });
       console.log(c);
     }
+
+    startTimeRef.current = new Date(); // Reset start time for the next level
   }
+
 
   function handleRestart() {
     setLvl(1);
     setItem(1);
     setGameOver(false);
     setTries(0);
+    totalTimeRef.current = 0; // Reset total time
     navigate(`/`);
   }
 
