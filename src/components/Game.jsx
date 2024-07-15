@@ -49,9 +49,9 @@ export default function Game() {
         tries: triesRef.current + tries,
         timer: totalTimeRef.current, // Report total accumulated time
         status: true
-      },{
+      }, {
         headers: {
-          "Authorization" : `${localStorage.getItem('logintoken')}`,
+          "Authorization": `${localStorage.getItem('logintoken')}`,
         },
       });
       console.log(c);
@@ -332,6 +332,17 @@ export default function Game() {
           </div>
         </div>
         <canvas id="board"></canvas>
+      </div>
+      <div className="d-flex justify-content-center align-items-center">
+        <div className="d-flex justify-content-center align-items-center">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter the word"
+            style={{ width: "300px" }}
+          />
+          <button className="btn btn-primary ms-2">Submit</button>
+        </div>
       </div>
       <div>
         <NextLevel showModal={correct === 5 && !gameOver} nextLevel={handleNext} />
