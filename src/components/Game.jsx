@@ -133,7 +133,10 @@ export default function Game() {
 
     if (!gameOver) {
       (async () => {
-        data.current = await import(`../levels/level${lvl}/item${item}.json`);
+        // data.current = await (`../levels/level${lvl}/item${item}.json`);
+        const response = await axios.get(`https://api.joywithlearning.com/api/connectingletters/${lvl}/${item}`);
+        console.log(response);
+        data.current = response.data;
 
         const app = new Application();
         appRef.current = app;
